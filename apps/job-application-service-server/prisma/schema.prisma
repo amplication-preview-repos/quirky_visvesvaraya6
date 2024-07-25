@@ -1,0 +1,69 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Vacancy {
+  id             String        @id @default(cuid())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  title          String?
+  description    String?
+  qualifications String?
+  company        Company?      @relation(fields: [companyId], references: [id])
+  companyId      String?
+  applications   Application[]
+}
+
+model Company {
+  id          String    @id @default(cuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  email       String?
+  password    String?
+  companyName String?
+  vacancies   Vacancy[]
+}
+
+model Application {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  jobSeeker String?
+  documents Json?
+  vacancy   Vacancy? @relation(fields: [vacancyId], references: [id])
+  vacancyId String?
+}
+
+model User {
+  id            String            @id @default(cuid())
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  firstName     String?
+  lastName      String?
+  username      String            @unique
+  email         String?           @unique
+  password      String
+  roles         Json
+  surname       String?
+  contactNumber String?
+  name          String?
+  userType      EnumUserUserType?
+  fullName      String?
+  userRole      EnumUserUserRole?
+  userEmail     String?
+  contactPhone  String?
+  userPassword  String?
+}
+
+enum EnumUserUserType {
+  Option1
+}
+
+enum EnumUserUserRole {
+  Option1
+}
