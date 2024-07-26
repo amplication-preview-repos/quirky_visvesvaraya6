@@ -1,0 +1,47 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Application {
+  id           String                 @id @default(cuid())
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  status       EnumApplicationStatus?
+  documents    Json?
+  jobListing   JobListing?            @relation(fields: [jobListingId], references: [id])
+  jobListingId String?
+  applicant    String?
+}
+
+model JobListing {
+  id           String        @id @default(cuid())
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  description  String?
+  location     String?
+  title        String?
+  salaryRange  String?
+  postedBy     String?
+  applications Application[]
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  firstName String?
+  lastName  String?
+  username  String   @unique
+  email     String?  @unique
+  password  String
+  roles     Json
+}
+
+enum EnumApplicationStatus {
+  Option1
+}
